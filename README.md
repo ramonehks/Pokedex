@@ -1,4 +1,4 @@
-# Pokedex: Deluxe Version
+# Pokédex: Deluxe Version
 <br>
 
 Uma aplicação desenvolvida para listar, buscar e exibir informações detalhadas sobre diferentes Pokémon.
