@@ -1,67 +1,65 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:300,400&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
 body {
-  background: #efefbb;
-  background: linear-gradient(to right, #d4d3dd, #efefbb);
-  font-family: 'Lato', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-size: cover;
+  background-position: center;
+  transition: background 0.4s ease;
+  color: #d1d1d1; 
 }
 
-h1 {
-  letter-spacing: 3px;
+.pokemon-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  padding: 1rem;
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.3s;
+  color: #000;
+}
+.pokemon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 200, 255, 0.3);
+}
+.pokemon-card h3 {
+  color: #000;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+}
+.pokemon-card .text-sm {
+  color: #111;
+  opacity: 0.8;
 }
 
-.poke-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: space-between;
-  justify-content: center;
-  margin: 0 auto;
-  max-width: 1200px;
+.modal-content {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 1rem;
+  color: #000;
 }
 
-.pokemon {
-  background-color: #eee;
-  border-radius: 10px;
-  box-shadow: 0 3px 15px rgba(100, 100, 100, 0.5);
-  margin: 10px;
-  padding: 20px;
-  text-align: center;
-}
-
-.pokemon .img-container {
-  background-color: rgba(255, 255, 255, 0.6);
+.pokeball {
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  text-align: center;
+  border: 4px solid rgb(224, 37, 12);
+  position: relative;
+  overflow: hidden;
+  animation: spin 1s linear infinite;
+  background: linear-gradient(#ff1100 0 48%, #333 48% 52%, #fff 52% 100%);
+  box-shadow: 0 0 15px rgb(224, 37, 12);
 }
-
-.pokemon .img-container img {
-  max-width: 90%;
-  margin-top: 20px;
+.pokeball::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgb(224, 37, 12);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgb(224, 37, 12);
 }
-
-.pokemon .info {
-  margin-top: 20px;
-}
-
-.pokemon .info .number {
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 0.8em;
-}
-
-.pokemon .info .name {
-  margin: 15px 0 7px;
-  letter-spacing: 1px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
