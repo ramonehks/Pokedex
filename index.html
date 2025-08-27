@@ -1,255 +1,79 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
-
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex Deluxe Version</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="image/x-icon" href="images/Pokeball.png">
-  <title>Pokedex Deluxe</title>
-  <script>
-    // Tailwind config (opcional)
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          boxShadow: { card: '0 8px 24px rgba(0,0,0,.18)' }
-        }
-      }
-    }
-      // Dark mode preferências
-      ; (() => {
-        const stored = localStorage.getItem('theme')
-        const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (stored === 'dark' || (!stored && preferDark)) {
-          document.documentElement.classList.add('dark')
-        }
-      })()
-  </script>
-  <style>
-    /* Loader Pokébola */
-    .pokeball {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 4px solid #222;
-      position: relative;
-      overflow: hidden;
-      animation: spin 1s linear infinite;
-      background: linear-gradient(#df2727 0 48%, #222 48% 52%, #fff 52% 100%);
-    }
-
-    .pokeball::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      display: block;
-      box-shadow: inset 0 0 0 8px transparent;
-    }
-
-    .pokeball::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 18px;
-      height: 18px;
-      border: 4px solid #222;
-      border-radius: 50%;
-      background: #fff;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Easter egg MissingNo. (glitch leve) */
-    .glitch {
-      position: relative;
-    }
-
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      overflow: hidden;
-      animation: glitch 1.5s infinite;
-    }
-
-    .glitch::before {
-      color: #f00;
-      clip-path: inset(0 0 60% 0);
-    }
-
-    .glitch::after {
-      color: #0ff;
-      clip-path: inset(40% 0 0 0);
-      animation-delay: .2s;
-    }
-
-    @keyframes glitch {
-      0% {
-        transform: translate(0, 0)
-      }
-
-      20% {
-        transform: translate(2px, -1px)
-      }
-
-      40% {
-        transform: translate(-2px, 2px)
-      }
-
-      60% {
-        transform: translate(1px, 1px)
-      }
-
-      80% {
-        transform: translate(-1px, -2px)
-      }
-
-      100% {
-        transform: translate(0, 0)
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+<body class="min-h-screen bg-slate-900 text-black flex flex-col">
 
-<body
-  class="min-h-full bg-gradient-to-br from-zinc-200 to-yellow-100 dark:from-zinc-900 dark:to-zinc-800 text-zinc-900 dark:text-zinc-100">
-  <!-- Header -->
-  <header
-    class="w-full sticky top-0 z-30 backdrop-blur bg-white/60 dark:bg-zinc-900/60 border-b border-black/5 dark:border-white/5">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center gap-3">
-      <img src="images/Pokeball.png" class="w-8 h-8" alt="Pokeball" />
-      <h1 class="text-2xl font-bold tracking-widest uppercase">Pokédex: Deluxe Version</h1>
-
-      <div class="ml-auto flex items-center gap-2">
-        <!-- Favoritos toggle -->
-        <button id="btn-favs"
-          class="px-3 py-2 text-sm rounded-lg bg-amber-200/70 dark:bg-amber-500/20 hover:bg-amber-300 dark:hover:bg-amber-500/30 transition">
-          ⭐ Favoritos
-        </button>
-        <!-- Dark mode -->
-        <button id="btn-theme"
-          class="px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition">
-          🌙/☀️
-        </button>
-        <!-- Shiny mode (para modal) -->
-        <button id="btn-shiny"
-          class="px-3 py-2 text-sm rounded-lg bg-fuchsia-200/70 dark:bg-fuchsia-500/20 hover:bg-fuchsia-300 dark:hover:bg-fuchsia-500/30 transition">
-          ✨ Shiny
-        </button>
-      </div>
-    </div>
-
-    <!-- Filtros -->
-    <div class="mx-auto max-w-6xl px-4 pb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      <input id="search" placeholder="Buscar por nome ou #ID..."
-        class="w-full px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 bg-white/80 dark:bg-zinc-800/80 outline-none focus:ring-2 focus:ring-indigo-400" />
-      <select id="type-filter"
-        class="w-full px-4 py-3 rounded-xl border border-black/10 dark:border-white/10 bg-white/80 dark:bg-zinc-800/80">
-        <option value="">Todos os tipos</option>
-        <option>normal</option>
-        <option>fire</option>
-        <option>water</option>
-        <option>electric</option>
-        <option>grass</option>
-        <option>ice</option>
-        <option>fighting</option>
-        <option>poison</option>
-        <option>ground</option>
-        <option>flying</option>
-        <option>psychic</option>
-        <option>bug</option>
-        <option>rock</option>
-        <option>ghost</option>
-        <option>dragon</option>
-        <option>dark</option>
-        <option>steel</option>
-        <option>fairy</option>
-      </select>
-      <div class="flex gap-2">
-        <button id="btn-clear"
-          class="px-4 py-3 rounded-xl bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition w-full">Limpar
-          filtros</button>
-        <button id="btn-load"
-          class="px-4 py-3 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition w-full">Carregar
-          mais</button>
-      </div>
-    </div>
+  <header class="p-6 text-center">
+    <h1 class="text-3xl md:text-5xl font-bold tracking-widest drop-shadow">
+      DELUXE POKÉDEX
+    </h1>
+    <p class="text-sm md:text-base text-black-700 mt-2">
+      Explore seus Pokémons favoritos em estilo! ✨
+    </p>
   </header>
 
-  <!-- Container -->
-  <main class="mx-auto max-w-6xl px-4 py-6">
-    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  <!-- Filtros -->
+  <section class="px-4 max-w-4xl mx-auto flex flex-col md:flex-row gap-3">
+    <input id="search" type="text" placeholder="Buscar Pokémon..."
+      class="flex-1 px-4 py-2 rounded-xl bg-white/60 backdrop-blur-md text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400">
 
-    <!-- Empty/Easter egg -->
-    <div id="empty" class="hidden text-center py-16">
-      <div class="text-3xl font-extrabold glitch" data-text="MissingNo.">MissingNo.</div>
-      <p class="opacity-70 mt-2">Nada encontrado. Tenta outro nome/ID 😉</p>
-    </div>
+    <select id="type-filter"
+      class="px-3 py-2 rounded-xl bg-white/60 backdrop-blur-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400">
+      <option value="">Todos os tipos</option>
+    </select>
 
-    <!-- Loader -->
-    <div id="loader"
-      class="fixed inset-0 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-sm hidden items-center justify-center z-40">
-      <div class="pokeball"></div>
-    </div>
-  </main>
+    <button id="btn-clear"
+      class="px-4 py-2 rounded-xl bg-white/70 backdrop-blur-md text-black hover:bg-white/90 transition">
+      Limpar
+    </button>
+  </section>
 
-  <!-- Modal Detalhes -->
-  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" data-close></div>
-    <div class="relative max-w-xl w-[92vw] rounded-2xl shadow-card bg-white dark:bg-zinc-900 p-6">
-      <button class="absolute right-3 top-3 text-xl" data-close>✖</button>
-      <div class="flex flex-col md:flex-row gap-6">
-        <div class="flex-1 flex flex-col items-center">
-          <img id="modal-art" class="w-64 h-64 object-contain" alt="art" />
-          <audio id="modal-cry" class="hidden" controls></audio>
-          <div class="mt-2 text-sm opacity-70">Clique no card para ouvir o cry</div>
-        </div>
-        <div class="flex-1">
-          <h2 id="modal-title" class="text-2xl font-bold"></h2>
-          <p id="modal-types" class="mt-1"></p>
-          <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
-            <div class="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800"><span class="opacity-70">Altura:</span> <b
-                id="modal-height"></b></div>
-            <div class="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800"><span class="opacity-70">Peso:</span> <b
-                id="modal-weight"></b></div>
-            <div class="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 col-span-2"><span
-                class="opacity-70">Habilidades:</span> <b id="modal-abilities"></b></div>
-          </div>
-          <div class="mt-5">
-            <h3 class="font-semibold mb-2">Stats</h3>
-            <div id="modal-stats" class="space-y-2"></div>
-          </div>
-        </div>
+  <!-- Botões extras -->
+  <section class="px-4 max-w-4xl mx-auto flex flex-wrap gap-3 justify-center mt-4">
+    <button id="btn-load"
+      class="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-300 to-blue-400 text-black font-semibold shadow-md hover:shadow-cyan-400/50 transition">
+      Carregar mais
+    </button>
+    <button id="btn-shiny"
+      class="px-5 py-3 rounded-xl bg-gradient-to-r from-yellow-300 to-orange-300 text-black font-semibold shadow-md hover:shadow-yellow-400/50 transition">
+      ✨ Shiny Mode
+    </button>
+    <button id="btn-favs"
+      class="px-5 py-3 rounded-xl bg-gradient-to-r from-pink-300 to-purple-300 text-black font-semibold shadow-md hover:shadow-pink-400/50 transition">
+      ⭐ Favoritos
+    </button>
+  </section>
+
+  <main id="grid" class="px-4 py-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"></main>
+
+  <div id="loader" class="hidden justify-center py-6">
+    <div class="pokeball"></div>
+  </div>
+
+  <div id="empty" class="hidden text-center py-6 text-red-600">Nenhum Pokémon encontrado.</div>
+
+  <div id="modal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-md items-center justify-center z-50">
+    <div class="modal-content relative max-w-xl w-[92vw] rounded-2xl text-black p-6 border border-cyan-300/40 shadow-xl">
+      <button data-close class="absolute top-3 right-3 text-gray-700 hover:text-black text-xl">✖</button>
+      <img id="modal-art" class="w-40 h-40 mx-auto drop-shadow-xl" alt="pokemon">
+      <h2 id="modal-title" class="text-2xl font-bold text-center mt-4"></h2>
+      <p id="modal-types" class="text-center text-gray-800 mb-4"></p>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div><b>Altura:</b> <span id="modal-height"></span></div>
+        <div><b>Peso:</b> <span id="modal-weight"></span></div>
+        <div class="col-span-2"><b>Habilidades:</b> <span id="modal-abilities"></span></div>
       </div>
+      <div id="modal-stats" class="space-y-2 mt-4"></div>
     </div>
   </div>
 
   <script src="script.js"></script>
-  <footer>
-
-    <script>
-
-      PerformanceResourceTiming(true)
-
-    </script>
-  
-<div class="marquee-container mt-8">
-    <div class="marquee">
-      💡 This website API was made by Arthur "Cisco" Ramone & TailwindCSS Companion 🚀
-    </div>
-  </div>
-
-  </footer>
 </body>
-
 </html>
